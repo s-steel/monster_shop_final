@@ -26,6 +26,18 @@ class Merchant::DiscountsController < Merchant::BaseController
     @discount = Discount.find(params[:id])
   end
 
+  def update
+    @discount = Discount.find(params[:id])
+    begin
+      @discount.update!(discount_params)
+      flash[:success] = "Your discount has been updated"
+      redirect_to "/merchant/discounts"
+    rescue ActiveRecord::RecordInvalid => e
+      create_error_response(e)
+      redirect_to "/merchant/discounts/#{@discount.id}/edit"
+    end
+  end
+
   private
 
   def discount_params
