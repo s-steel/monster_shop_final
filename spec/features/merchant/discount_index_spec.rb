@@ -72,5 +72,22 @@ RSpec.describe 'Merchant Discount Index' do
         expect(page).to have_content("Discount: #{new_discount.discount}%, on #{new_discount.number_of_items} items")
       end
     end
+
+    it 'you must fill in the form completely otherwise you get a flash error' do
+      visit "/merchant/discounts/new"
+      fill_in "discount[discount]", with: ""
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Discount can't be blank")
+
+      fill_in "discount[discount]", with: 7
+      fill_in "discount[number_of_items]", with: ""
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Number of items can't be blank")
+    end
   end
 end

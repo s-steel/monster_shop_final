@@ -12,14 +12,13 @@ class Merchant::DiscountsController < Merchant::BaseController
   def create
     user = current_user
     @discount = user.merchant.discounts.new(discount_params)
-
     begin
       @discount.save!
       flash[:success] = "Discount created successfully!"
       redirect_to "/merchant/discounts"
     rescue ActiveRecord::RecordInvalid => e
       create_error_response(e)
-      render :new
+      redirect_to "/merchant/discounts/new"
     end
   end
 
