@@ -89,5 +89,22 @@ RSpec.describe 'Merchant Discount Index' do
       expect(current_path).to eq("/merchant/discounts/new")
       expect(page).to have_content("Number of items can't be blank")
     end
+
+    it 'discount or number of itmes fields cannot be 0' do
+      visit "/merchant/discounts/new"
+      fill_in "discount[discount]", with: 0
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Discount must be greater than 0")
+
+      fill_in "discount[discount]", with: 10
+      fill_in "discount[number_of_items]", with: 0
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Number of items must be greater than 0")
+    end
   end
 end
