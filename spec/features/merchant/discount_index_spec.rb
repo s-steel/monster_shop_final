@@ -48,5 +48,10 @@ RSpec.describe 'Merchant Discount Index' do
     it 'there is a button to create a new discount' do
       expect(page).to have_button("Create a New Discount")
     end
+
+    it 'click button for a new discount and you see a form to fill in, and submitting it routes you back to discount index page' do
+      click_button("Create a New Discount")
+      expect(current_path).to eq("/merchant/discounts/new")
+    end
   end
 end
