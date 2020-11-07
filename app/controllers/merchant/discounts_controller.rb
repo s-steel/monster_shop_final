@@ -6,6 +6,30 @@ class Merchant::DiscountsController < Merchant::BaseController
   end
 
   def new
-  end 
+    @discount = Discount.new
+  end
 
+  def create
+    user = current_user
+    @discount = user.merchant.discounts.new(discount_params)
+
+    begin
+      @discount.save!
+      flash[:success] = "Discount created successfully!"
+      redirect_to "/merchant/discounts"
+    rescue ActiveRecord::RecordInvalid => e
+      create_error_response(e)
+      render :new
+    end
+  end
+
+  private
+
+  def discount_params
+    params.require(:discount).permit(:discount, :number_of_items)
+  end
+
+  def create_error_response(error)
+      flash[:error] = error.message.delete_prefix('Validation failed: ')
+  end
 end

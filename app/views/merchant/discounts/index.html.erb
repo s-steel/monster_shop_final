@@ -6,6 +6,6 @@
 
 <% @discounts.each do |discount| %>
   <section id="discount-<%= discount.id %>">
-    <h3>Discount: <%= number_to_percentage(discount.discount, precision: 0) %>, on <%= discount.number_of_items %></h3>
+    <h3>Discount: <%= number_to_percentage(discount.discount, precision: 0) %>, on <%= discount.number_of_items %> items</h3>
   </section>
 <% end %>

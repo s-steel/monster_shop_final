@@ -1,1 +1,11 @@
 <h1>Enter New Discount Information</h1>
+
+<%= form_with model: [:merchant, @discount], local: true do |f| %>
+  <%= f.label :discount %>
+  <%= f.text_field :discount %> %<br>
+
+  <%= f.label :number_of_items %>
+  <%= f.text_field :number_of_items %><br>
+
+  <%= f.submit %>
+<% end %>

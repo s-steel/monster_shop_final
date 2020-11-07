@@ -37,11 +37,11 @@ RSpec.describe 'Merchant Discount Index' do
       expect(page).to have_content("Your Discounts:")
 
       within "#discount-#{@discount_1.id}" do
-        expect(page).to have_content("Discount: #{@discount_1.discount}%, on #{@discount_1.number_of_items}")
+        expect(page).to have_content("Discount: #{@discount_1.discount}%, on #{@discount_1.number_of_items} items")
       end
 
       within "#discount-#{@discount_2.id}" do
-        expect(page).to have_content("Discount: #{@discount_2.discount}%, on #{@discount_2.number_of_items}")
+        expect(page).to have_content("Discount: #{@discount_2.discount}%, on #{@discount_2.number_of_items} items")
       end
     end
 
@@ -49,9 +49,28 @@ RSpec.describe 'Merchant Discount Index' do
       expect(page).to have_button("Create a New Discount")
     end
 
-    it 'click button for a new discount and you see a form to fill in, and submitting it routes you back to discount index page' do
+    it 'click button for a new discount and you see a form to fill in' do
       click_button("Create a New Discount")
       expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Enter New Discount Information")
+      expect(page).to have_field("discount[discount]")
+      expect(page).to have_field("discount[number_of_items]")
+      expect(page).to have_button('Create Discount')
+    end
+
+    it 'filing in form and submitting takes you back to the index page and you see a flash message confiming it' do
+      visit "/merchant/discounts/new"
+      fill_in "discount[discount]", with: 7
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts")
+      expect(page).to have_content("Discount created successfully!")
+
+      new_discount = Discount.last
+      within "#discount-#{new_discount.id}" do
+        expect(page).to have_content("Discount: #{new_discount.discount}%, on #{new_discount.number_of_items} items")
+      end
     end
   end
 end
