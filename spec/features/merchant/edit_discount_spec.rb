@@ -26,5 +26,26 @@ RSpec.describe 'Merchant Discount Index' do
       visit '/merchant/discounts'
     end
 
+    it 'see button to edit each discount on the discount index page' do
+
+      within "#discount-#{@discount_1.id}" do
+        expect(page).to have_button("Edit Discount")
+      end
+
+      within "#discount-#{@discount_2.id}" do
+        expect(page).to have_button("Edit Discount")
+      end
+    end
+
+    it 'click edit button and youre taken to a form to edit the discount' do
+
+      within "#discount-#{@discount_1.id}" do
+        click_button("Edit Discount")
+      end
+
+      expect(current_path).to eq("/merchant/discounts/#{@discount_1.id}/edit")
+      expect(page).to have_content("Edit Discount")
+
+    end
   end
-end 
+end
