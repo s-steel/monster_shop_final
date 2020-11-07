@@ -52,7 +52,7 @@ RSpec.describe 'New Discount' do
 
       new_discount = Discount.last
       within "#discount-#{new_discount.id}" do
-        expect(page).to have_content("Discount: #{new_discount.discount}%, on #{new_discount.number_of_items} items")
+        expect(page).to have_content("Discount #{new_discount.id}: #{new_discount.discount}%, on #{new_discount.number_of_items} items")
       end
     end
 
