@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Merchant Discount Index' do
+RSpec.describe 'New Discount' do
   describe 'As a Merchant employee' do
     before :each do
       @merchant_1 = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
@@ -23,26 +23,69 @@ RSpec.describe 'Merchant Discount Index' do
       @discount_3 = @merchant_2.discounts.create!(discount: 3, number_of_items: 5)
       @discount_4 = @merchant_2.discounts.create!(discount: 6, number_of_items: 15)
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@m_user)
+      visit '/merchant/discounts/new'
+    end
+
+
+    it 'there is a button to create a new discount' do
       visit '/merchant/discounts'
+      expect(page).to have_button("Create a New Discount")
     end
 
-    it 'I can link to my merchant discounts from the merchant dashboard' do
-      visit '/merchant'
-
-      click_link 'My Discounts'
-      expect(current_path).to eq('/merchant/discounts')
+    it 'click button for a new discount and you see a form to fill in' do
+      visit '/merchant/discounts'
+      click_button("Create a New Discount")
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Enter New Discount Information")
+      expect(page).to have_field("discount[discount]")
+      expect(page).to have_field("discount[number_of_items]")
+      expect(page).to have_button('Create Discount')
     end
 
-    it 'show list of all discounts for that merchant with dicount and number_of_items' do
-      expect(page).to have_content("Your Discounts:")
+    it 'filing in form and submitting takes you back to the index page and you see a flash message confiming it' do
+      fill_in "discount[discount]", with: 7
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Create Discount")
 
-      within "#discount-#{@discount_1.id}" do
-        expect(page).to have_content("Discount: #{@discount_1.discount}%, on #{@discount_1.number_of_items} items")
+      expect(current_path).to eq("/merchant/discounts")
+      expect(page).to have_content("Discount created successfully!")
+
+      new_discount = Discount.last
+      within "#discount-#{new_discount.id}" do
+        expect(page).to have_content("Discount: #{new_discount.discount}%, on #{new_discount.number_of_items} items")
       end
-
-      within "#discount-#{@discount_2.id}" do
-        expect(page).to have_content("Discount: #{@discount_2.discount}%, on #{@discount_2.number_of_items} items")
-      end
     end
-  end 
+
+    it 'you must fill in the form completely otherwise you get a flash error' do
+      fill_in "discount[discount]", with: ""
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Discount can't be blank")
+
+      fill_in "discount[discount]", with: 7
+      fill_in "discount[number_of_items]", with: ""
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Number of items can't be blank")
+    end
+
+    it 'discount or number of itmes fields cannot be 0' do
+      fill_in "discount[discount]", with: 0
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Discount must be greater than 0")
+
+      fill_in "discount[discount]", with: 10
+      fill_in "discount[number_of_items]", with: 0
+      click_button("Create Discount")
+
+      expect(current_path).to eq("/merchant/discounts/new")
+      expect(page).to have_content("Number of items must be greater than 0")
+    end
+  end
 end

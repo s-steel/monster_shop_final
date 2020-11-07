@@ -26,23 +26,5 @@ RSpec.describe 'Merchant Discount Index' do
       visit '/merchant/discounts'
     end
 
-    it 'I can link to my merchant discounts from the merchant dashboard' do
-      visit '/merchant'
-
-      click_link 'My Discounts'
-      expect(current_path).to eq('/merchant/discounts')
-    end
-
-    it 'show list of all discounts for that merchant with dicount and number_of_items' do
-      expect(page).to have_content("Your Discounts:")
-
-      within "#discount-#{@discount_1.id}" do
-        expect(page).to have_content("Discount: #{@discount_1.discount}%, on #{@discount_1.number_of_items} items")
-      end
-
-      within "#discount-#{@discount_2.id}" do
-        expect(page).to have_content("Discount: #{@discount_2.discount}%, on #{@discount_2.number_of_items} items")
-      end
-    end
-  end 
-end
+  end
+end 
