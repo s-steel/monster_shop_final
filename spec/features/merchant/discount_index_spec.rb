@@ -44,5 +44,9 @@ RSpec.describe 'Merchant Discount Index' do
         expect(page).to have_content("Discount: #{@discount_2.discount}%, on #{@discount_2.number_of_items}")
       end
     end
+
+    it 'there is a button to create a new discount' do
+      expect(page).to have_button("Create a New Discount")
+    end
   end
 end

@@ -1,5 +1,7 @@
 <h2><%= @merchant.name %></h2>
 
+<%= button_to "Create a New Discount", "/merchant/discounts/new" %>
+
 <h2>Your Discounts:</h2>
 
 <% @discounts.each do |discount| %>
