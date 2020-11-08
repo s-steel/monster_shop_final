@@ -48,10 +48,10 @@ RSpec.describe 'Merchant Discount Index' do
       expect(find_field('discount[number_of_items]').value).to eq("#{@discount_1.number_of_items}")
     end
 
-    it 'once submitted I am taked back to discount index, see flash message, and see updated discount' do
+    xit 'once submitted I am taked back to discount index, see flash message, and see updated discount' do
       visit "/merchant/discounts/#{@discount_1.id}/edit"
-      fill_in "discount[discount]", with: 2
-      fill_in "discount[number_of_items]", with: 13
+      fill_in 'discount[discount]', with: 17
+      fill_in "discount[number_of_items]", with: 23
       save_and_open_page
       click_button("Update Discount")
 
@@ -63,6 +63,42 @@ RSpec.describe 'Merchant Discount Index' do
       end
 
       expect(page).to have_content("Your discount has been updated")
+    end
+
+    it 'you must fill in the form completely otherwise you get a flash error' do
+      visit "/merchant/discounts/#{@discount_1.id}/edit"
+
+      fill_in "discount[discount]", with: ""
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Update Discount")
+
+      expect(current_path).to eq("/merchant/discounts/#{@discount_1.id}/edit")
+      expect(page).to have_content("Discount can't be blank, Discount is not a number")
+
+      fill_in "discount[discount]", with: 7
+      fill_in "discount[number_of_items]", with: ""
+      click_button("Update Discount")
+
+      expect(current_path).to eq("/merchant/discounts/#{@discount_1.id}/edit")
+      expect(page).to have_content("Number of items can't be blank, Number of items is not a number")
+    end
+
+    it 'discount or number of itmes fields cannot be 0' do
+      visit "/merchant/discounts/#{@discount_1.id}/edit"
+
+      fill_in "discount[discount]", with: 0
+      fill_in "discount[number_of_items]", with: 13
+      click_button("Update Discount")
+
+      expect(current_path).to eq("/merchant/discounts/#{@discount_1.id}/edit")
+      expect(page).to have_content("Discount must be greater than 0")
+
+      fill_in "discount[discount]", with: 10
+      fill_in "discount[number_of_items]", with: 0
+      click_button("Update Discount")
+
+      expect(current_path).to eq("/merchant/discounts/#{@discount_1.id}/edit")
+      expect(page).to have_content("Number of items must be greater than 0")
     end
   end
 end
