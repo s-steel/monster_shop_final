@@ -5,6 +5,10 @@ class Merchant::DiscountsController < Merchant::BaseController
     @discounts = current_user.merchant.discounts
   end
 
+  def show
+    @discount = Discount.find(params[:id])
+  end
+
   def new
     @discount = Discount.new
   end
@@ -36,6 +40,13 @@ class Merchant::DiscountsController < Merchant::BaseController
       create_error_response(e)
       redirect_to "/merchant/discounts/#{@discount.id}/edit"
     end
+  end
+
+  def destroy
+    discount = Discount.find(params[:id])
+    discount.destroy
+    flash[:success] = "Discount has been successfully deleted"
+    redirect_to "/merchant/discounts"
   end
 
   private

@@ -42,7 +42,7 @@ RSpec.describe 'Merchant Discount Index' do
       end
     end
 
-    it 'show list of all discounts for that merchant with dicount and number_of_items' do
+    it 'show list of all discounts for that merchant with discount and number_of_items' do
       expect(page).to have_content("Your Discounts:")
 
       within "#discount-#{@discount_1.id}" do
@@ -52,6 +52,23 @@ RSpec.describe 'Merchant Discount Index' do
       within "#discount-#{@discount_2.id}" do
         expect(page).to have_content("Discount #{@discount_2.id}: #{@discount_2.discount}%, on #{@discount_2.number_of_items} items")
       end
+    end
+
+    xit 'each discount has a delete button and clicking it will delete that discount' do
+      within "#discount-#{@discount_1.id}" do
+        expect(page).to have_button("Delete Discount")
+      end
+      within "#discount-#{@discount_2.id}" do
+        expect(page).to have_button("Delete Discount")
+      end
+
+      within "#discount-#{@discount_1.id}" do
+        click_button("Delete Discount")
+      end
+      expect(current_path).to eq("/merchant/discounts")
+      expect(page).to have_content("Discount has been successfully deleted")
+
+      expect(page).to_not have_content(@discount_1.id)
     end
   end
 end
