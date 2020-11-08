@@ -1,0 +1,4 @@
+<h1>Discount <%= @discount.id %></h1>
+
+<h3>Percent to be discounted: <%= number_to_percentage(@discount.discount, precision: 0) %></h3>
+<h3>When a customer orders <%= @discount.number_of_items %> or more of a particular item</h3>
