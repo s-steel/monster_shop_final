@@ -30,4 +30,8 @@ class Item < ApplicationRecord
   def average_rating
     reviews.average(:rating)
   end
+
+  def merchant_has_discount?
+    discounts.present?
+  end
 end
