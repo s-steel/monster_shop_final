@@ -9,6 +9,9 @@ class Discount < ApplicationRecord
 
   # def maximum_discount
   #   maximum(:discount)
-  # end 
+  # end
 
+  def discount_to_decimal
+    (100 - discount) * (0.01)
+  end
 end
