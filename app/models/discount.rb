@@ -5,4 +5,10 @@ class Discount < ApplicationRecord
   has_many :items, through: :merchant
   validates_numericality_of :discount, greater_than: 0
   validates_numericality_of :number_of_items, greater_than: 0
+
+
+  # def maximum_discount
+  #   maximum(:discount)
+  # end 
+
 end

@@ -40,6 +40,7 @@ RSpec.describe 'New Discount' do
       expect(page).to have_field("discount[discount]")
       expect(page).to have_field("discount[number_of_items]")
       expect(page).to have_button('Create Discount')
+      binding.pry
     end
 
     it 'filing in form and submitting takes you back to the index page and you see a flash message confiming it' do
