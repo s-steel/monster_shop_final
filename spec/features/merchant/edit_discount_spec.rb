@@ -49,17 +49,18 @@ RSpec.describe 'Merchant Discount Index' do
     end
 
     xit 'once submitted I am taked back to discount index, see flash message, and see updated discount' do
-      visit "/merchant/discounts/#{@discount_1.id}/edit"
-      fill_in 'discount[discount]', with: 17
-      fill_in "discount[number_of_items]", with: 23
-      save_and_open_page
+      discount = @merchant_1.discounts.create!(discount: 5, number_of_items: 10)
+      visit "/merchant/discounts/#{discount.id}/edit"
+
+      fill_in "discount[discount]", with: 7
+      fill_in "discount[number_of_items]", with: 13
       click_button("Update Discount")
-
       expect(current_path).to eq("/merchant/discounts")
-
-      within "#discount-#{@discount_1.id}" do
-        expect(page).to have_content('17')
-        expect(page).to have_content('23')
+save_and_open_page
+      within "#discount-#{discount.id}" do
+        expect(@discount_1.discount).to eq(7)
+        expect(page).to have_content(7)
+        expect(page).to have_content(13)
       end
 
       expect(page).to have_content("Your discount has been updated")
