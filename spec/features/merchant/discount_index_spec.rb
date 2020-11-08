@@ -46,11 +46,11 @@ RSpec.describe 'Merchant Discount Index' do
       expect(page).to have_content("Your Discounts:")
 
       within "#discount-#{@discount_1.id}" do
-        expect(page).to have_content("Discount #{@discount_1.id}: #{@discount_1.discount}%, on #{@discount_1.number_of_items} items")
+        expect(page).to have_content("Discount #{@discount_1.id}: #{@discount_1.discount}%, on #{@discount_1.number_of_items} or more items")
       end
 
       within "#discount-#{@discount_2.id}" do
-        expect(page).to have_content("Discount #{@discount_2.id}: #{@discount_2.discount}%, on #{@discount_2.number_of_items} items")
+        expect(page).to have_content("Discount #{@discount_2.id}: #{@discount_2.discount}%, on #{@discount_2.number_of_items} or more items")
       end
     end
 
