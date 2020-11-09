@@ -6,9 +6,19 @@ RSpec.describe 'Cart Show Page' do
     before :each do
       @megan = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
       @brian = Merchant.create!(name: 'Brians Bagels', address: '125 Main St', city: 'Denver', state: 'CO', zip: 80218)
-      @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
+      @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 100 )
       @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
       @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+
+      @discount_1 = @megan.discounts.create!(discount: 5, number_of_items: 3)
+      @discount_2 = @megan.discounts.create!(discount: 7, number_of_items: 5)
+      @discount_3 = @megan.discounts.create!(discount: 6, number_of_items: 10)
+      @discount_4 = @megan.discounts.create!(discount: 10, number_of_items: 15)
+      @discount_5 = @megan.discounts.create!(discount: 3, number_of_items: 20)
+      @discount_6 = @megan.discounts.create!(discount: 5, number_of_items: 25)
+      @discount_7 = @megan.discounts.create!(discount: 20, number_of_items: 26)
+
+      @discount_8 = @brian.discounts.create!(discount: 50, number_of_items: 50)
     end
 
     describe 'I can see my cart' do
@@ -166,6 +176,25 @@ RSpec.describe 'Cart Show Page' do
         expect(current_path).to eq('/cart')
         expect(page).to_not have_content("#{@hippo.name}")
         expect(page).to have_content("Cart: 0")
+      end
+    end
+
+    describe 'applying discounts' do
+      before :each do
+        visit item_path(@ogre)
+        click_button 'Add to Cart'
+        visit item_path(@giant)
+        click_button 'Add to Cart'
+        visit item_path(@hippo)
+        click_button 'Add to Cart'
+        visit '/cart'
+      end
+
+      it 'can apply a discount and see the discounted subtotal' do
+        # save_and_open_page
+        # within "#item-#{@orge.id}" do
+        #   click_button('More of This!')
+        # end
       end
     end
   end
