@@ -29,9 +29,13 @@ RSpec.describe Item do
       @review_3 = @ogre.reviews.create(title: 'EW', description: 'This Ogre is Ew', rating: 1)
       @review_4 = @ogre.reviews.create(title: 'So So', description: 'This Ogre is So so', rating: 2)
       @review_5 = @ogre.reviews.create(title: 'Okay', description: 'This Ogre is Okay', rating: 4)
-
-      @discount_1 = @megan.discounts.create!(discount: 5, number_of_items: 10)
-      @discount_2 = @megan.discounts.create!(discount: 10, number_of_items: 20)
+      @discount_1 = @megan.discounts.create!(discount: 5, number_of_items: 3)
+      @discount_2 = @megan.discounts.create!(discount: 7, number_of_items: 5)
+      @discount_3 = @megan.discounts.create!(discount: 6, number_of_items: 10)
+      @discount_4 = @megan.discounts.create!(discount: 10, number_of_items: 15)
+      @discount_5 = @megan.discounts.create!(discount: 3, number_of_items: 20)
+      @discount_6 = @megan.discounts.create!(discount: 5, number_of_items: 25)
+      @discount_7 = @megan.discounts.create!(discount: 20, number_of_items: 26)
     end
 
     it '.sorted_reviews()' do
@@ -45,9 +49,25 @@ RSpec.describe Item do
     end
 
     it '.merchant_has_discount?' do
-      expect(@ogre.merchant_has_discount?).to eq(true)
-      expect(@giant.merchant_has_discount?).to eq(true)
-      expect(@hippo.merchant_has_discount?).to eq(false)
+      expect(@ogre.merchant_has_discount?).to be_truthy
+      expect(@giant.merchant_has_discount?).to be_truthy
+      expect(@hippo.merchant_has_discount?).to be_falsy
+    end
+
+    it '.discount_to_use' do
+      expect(@ogre.discount_to_use(2)).to be_nil
+      expect(@hippo.discount_to_use(30)).to be_nil
+
+      expect(@ogre.discount_to_use(3)).to be(5)
+      expect(@ogre.discount_to_use(5)).to be(7)
+      expect(@ogre.discount_to_use(9)).to be(7)
+      expect(@ogre.discount_to_use(13)).to be(7)
+      expect(@ogre.discount_to_use(15)).to be(10)
+      expect(@ogre.discount_to_use(21)).to be(10)
+      expect(@ogre.discount_to_use(25)).to be(10)
+      expect(@ogre.discount_to_use(26)).to be(20)
+      expect(@ogre.discount_to_use(4009)).to be(20)
+      expect(@ogre.discount_to_use(4)).to be(5)
     end
   end
 
