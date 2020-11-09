@@ -13,5 +13,16 @@ class Discount < ApplicationRecord
 
   def discount_to_decimal
     (100 - discount) * (0.01)
+
+    # maybe create a percent method? 
+
+    # def percent(discount)
+    #   (100 - discount) * (0.01)
+    # end
+  end
+
+  def discount_to_use(item_count)
+    where(item_count >= number_of_items)
+    .maximum(:discount)
   end
 end
