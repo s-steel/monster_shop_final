@@ -30,4 +30,12 @@ class Item < ApplicationRecord
   def average_rating
     reviews.average(:rating)
   end
+
+  def merchant_has_discount?
+    discounts.present?
+  end
+
+  def discount_to_use(item_count)
+     discounts.where("number_of_items <=  #{item_count}").maximum(:discount)
+  end
 end

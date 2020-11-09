@@ -20,13 +20,22 @@ RSpec.describe Item do
   describe 'Instance Methods' do
     before :each do
       @megan = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
+      @merchant_2 = Merchant.create!(name: 'Brians Bagels', address: '125 Main St', city: 'Denver', state: 'CO', zip: 80218)
       @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
       @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
+      @hippo = @merchant_2.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 1 )
       @review_1 = @ogre.reviews.create(title: 'Great!', description: 'This Ogre is Great!', rating: 5)
       @review_2 = @ogre.reviews.create(title: 'Meh.', description: 'This Ogre is Mediocre', rating: 3)
       @review_3 = @ogre.reviews.create(title: 'EW', description: 'This Ogre is Ew', rating: 1)
       @review_4 = @ogre.reviews.create(title: 'So So', description: 'This Ogre is So so', rating: 2)
       @review_5 = @ogre.reviews.create(title: 'Okay', description: 'This Ogre is Okay', rating: 4)
+      @discount_1 = @megan.discounts.create!(discount: 5, number_of_items: 3)
+      @discount_2 = @megan.discounts.create!(discount: 7, number_of_items: 5)
+      @discount_3 = @megan.discounts.create!(discount: 6, number_of_items: 10)
+      @discount_4 = @megan.discounts.create!(discount: 10, number_of_items: 15)
+      @discount_5 = @megan.discounts.create!(discount: 3, number_of_items: 20)
+      @discount_6 = @megan.discounts.create!(discount: 5, number_of_items: 25)
+      @discount_7 = @megan.discounts.create!(discount: 20, number_of_items: 26)
     end
 
     it '.sorted_reviews()' do
@@ -37,6 +46,28 @@ RSpec.describe Item do
 
     it '.average_rating' do
       expect(@ogre.average_rating.round(2)).to eq(3.00)
+    end
+
+    it '.merchant_has_discount?' do
+      expect(@ogre.merchant_has_discount?).to be_truthy
+      expect(@giant.merchant_has_discount?).to be_truthy
+      expect(@hippo.merchant_has_discount?).to be_falsy
+    end
+
+    it '.discount_to_use' do
+      expect(@ogre.discount_to_use(2)).to be_nil
+      expect(@hippo.discount_to_use(30)).to be_nil
+
+      expect(@ogre.discount_to_use(3)).to be(5)
+      expect(@ogre.discount_to_use(5)).to be(7)
+      expect(@ogre.discount_to_use(9)).to be(7)
+      expect(@ogre.discount_to_use(13)).to be(7)
+      expect(@ogre.discount_to_use(15)).to be(10)
+      expect(@ogre.discount_to_use(21)).to be(10)
+      expect(@ogre.discount_to_use(25)).to be(10)
+      expect(@ogre.discount_to_use(26)).to be(20)
+      expect(@ogre.discount_to_use(4009)).to be(20)
+      expect(@ogre.discount_to_use(4)).to be(5)
     end
   end
 

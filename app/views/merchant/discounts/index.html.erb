@@ -6,7 +6,7 @@
 
 <% @discounts.each do |discount| %>
   <section id="discount-<%= discount.id %>">
-    <h3><%= link_to "Discount #{discount.id}", "/merchant/discounts/#{discount.id}" %>: <%= number_to_percentage(discount.discount, precision: 0) %>, on <%= discount.number_of_items %> items</h3>
+    <h3><%= link_to "Discount #{discount.id}", "/merchant/discounts/#{discount.id}" %>: <%= number_to_percentage(discount.discount, precision: 0) %>, on <%= discount.number_of_items %> or more items</h3>
     <%= button_to "Edit Discount", "/merchant/discounts/#{discount.id}/edit", method: :get %>
     <%= button_to "Delete Discount", "/merchant/discounts/#{discount.id}", method: :delete %>
   </section>
