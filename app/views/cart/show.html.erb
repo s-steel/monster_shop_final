@@ -8,11 +8,11 @@
       <h2><%= link_to item.name, "/items/#{item.id}" %></h2>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw">
       <p>Price: <%= number_to_currency(item.price) %></p>
-      <% if item.merchant_has_discount? && item.discounts.discount_to_use(cart.count_of(item.id)) %>
+      <% if item.merchant_has_discount? && item.discount_to_use(cart.count_of(item.id)) %>
         <p>Quantity: <%= cart.count_of(item.id) %></p>
         <p>You received a bulk discount!</p>
         <p>Normally: <%= number_to_currency(cart.subtotal_of(item.id)) %></p>
-        <p>Discounted Subtotal: <%= number_to_currency(cart.subtotal_of(item.id) * item.discounts.first.discount_to_decimal.round(2)) %></p>
+        <p>Discounted Subtotal: <%= number_to_currency(cart.subtotal_of(item.id) * ((100 - item.discount_to_use(cart.count_of(item.id))) * (0.01))) %></p>
       <% else %>
         <p>Quantity: <%= cart.count_of(item.id) %></p>
         <p>Subtotal: <%= number_to_currency(cart.subtotal_of(item.id)) %></p>
