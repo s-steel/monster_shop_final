@@ -190,12 +190,32 @@ RSpec.describe 'Cart Show Page' do
         visit '/cart'
       end
 
-      it 'can apply a discount and see the discounted subtotal' do
-        # save_and_open_page
-        # within "#item-#{@orge.id}" do
-        #   click_button('More of This!')
-        # end
+      it 'can apply a discount and see the discounted subtotal with message' do
+        within "#item-#{@ogre.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+        end
+
+        within "#item-#{@ogre.id}" do
+          expect(page).to have_content("You received a bulk discount!")
+          expect(page).to have_content("Normally: #{number_to_currency(@ogre.price * 3)}")
+          expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 3) * @discount_1.discount_to_decimal)}")
+        end
+
+        within "#item-#{@giant.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+        end
+
+        within "#item-#{@giant.id}" do
+          expect(page).to have_content("You received a bulk discount!")
+          expect(page).to have_content("Normally: #{number_to_currency(@giant.price * 3)}")
+          expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@giant.price * 3) * @discount_1.discount_to_decimal)}")
+        end
       end
+
+      it 'a merchant discount does not apply to items from another merchant'
+
     end
   end
 end
