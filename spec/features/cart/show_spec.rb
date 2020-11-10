@@ -235,6 +235,31 @@ RSpec.describe 'Cart Show Page' do
           expect(page).to_not have_content("Discounted Subtotal: #{number_to_currency((@troll.price * 6) * @discount_1.discount_to_decimal)}")
         end
       end
+
+      it 'a discount only applies to items which exceed the minimum quantity specified in the bulk discount' do
+        within "#item-#{@ogre.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+        end
+
+        within "#item-#{@ogre.id}" do
+          expect(page).to have_content("You received a bulk discount!")
+          expect(page).to have_content("Normally: #{number_to_currency(@ogre.price * 3)}")
+          expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 3) * @discount_1.discount_to_decimal)}")
+        end
+
+        within "#item-#{@giant.id}" do
+          click_button('More of This!')
+        end
+
+        within "#item-#{@giant.id}" do
+          expect(page).to have_content("Subtotal: #{number_to_currency(@giant.price * 2)}")
+          expect(page).to_not have_content("You received a bulk discount!")
+          expect(page).to_not have_content("Normally: #{number_to_currency(@giant.price * 2)}")
+          expect(page).to_not have_content("Discounted Subtotal: #{number_to_currency((@giant.price * 2) * @discount_1.discount_to_decimal)}")
+        end
+
+      end
     end
   end
 end
