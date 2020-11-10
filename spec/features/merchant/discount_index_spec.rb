@@ -54,7 +54,7 @@ RSpec.describe 'Merchant Discount Index' do
       end
     end
 
-    xit 'each discount has a delete button and clicking it will delete that discount' do
+    it 'each discount has a delete button and clicking it will delete that discount' do
       within "#discount-#{@discount_1.id}" do
         expect(page).to have_button("Delete Discount")
       end
@@ -68,7 +68,7 @@ RSpec.describe 'Merchant Discount Index' do
       expect(current_path).to eq("/merchant/discounts")
       expect(page).to have_content("Discount has been successfully deleted")
 
-      expect(page).to_not have_content(@discount_1.id)
+      expect(Discount.all.include?(@discount_1)).to eq(false)
     end
   end
 end
