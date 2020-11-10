@@ -16,6 +16,13 @@ RSpec.describe 'Order Show Page' do
       @order_item_1 = @order_1.order_items.create!(item: @ogre, price: @ogre.price, quantity: 2, fulfilled: true)
       @order_item_2 = @order_2.order_items.create!(item: @giant, price: @hippo.price, quantity: 2, fulfilled: true)
       @order_item_3 = @order_2.order_items.create!(item: @ogre, price: @ogre.price, quantity: 2, fulfilled: false)
+
+      @troll = @megan.items.create!(name: 'Troll', description: "I'm an Troll!", price: 25, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 20 )
+      @hobbit = @megan.items.create!(name: 'Hobbit', description: "I'm a Hobbit!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 20 )
+      @dwarf = @brian.items.create!(name: 'Dwarf', description: "I'm a Drarf!", price: 75, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 20 )
+      @discount_1 = @megan.discounts.create!(discount: 5, number_of_items: 4)
+      @discount_2 = @megan.discounts.create!(discount: 10, number_of_items: 6)
+      @discount_3 = @megan.discounts.create!(discount: 15, number_of_items: 15)
       allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(@user)
     end
 
@@ -82,5 +89,58 @@ RSpec.describe 'Order Show Page' do
       expect(@giant.inventory).to eq(5)
       expect(@ogre.inventory).to eq(7)
     end
+
+    it 'I see any discounts applied to respective items' do
+      visit item_path(@troll)
+      click_button 'Add to Cart'
+      visit item_path(@hobbit)
+      click_button 'Add to Cart'
+      visit item_path(@dwarf)
+      click_button 'Add to Cart'
+      visit "/cart"
+      within "#item-#{@troll.id}" do
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+      end
+      within "#item-#{@hobbit.id}" do
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+      end
+      within "#item-#{@dwarf.id}" do
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+        click_button('More of This!')
+      end
+
+      click_button("Check Out")
+      order = @user.orders.last
+      item_order_1 = order.order_items[0]
+      item_order_2 = order.order_items[1]
+      item_order_3 = order.order_items[2]
+      visit "/profile/orders/#{order.id}"
+
+      within "#order-item-#{item_order_1.id}" do
+        expect(page).to have_content("Your discount has been applied!")
+        expect(page).to have_content(@troll.price * @discount_1.discount_to_decimal)
+        expect(page).to have_content(@troll.price * item_order_1.quantity * @discount_1.discount_to_decimal)
+      end
+      within "#order-item-#{item_order_2.id}" do
+        expect(page).to have_content("Your discount has been applied!")
+        expect(page).to have_content(@hobbit.price * @discount_2.discount_to_decimal)
+        expect(page).to have_content(@hobbit.price * item_order_2.quantity * @discount_2.discount_to_decimal)
+      end
+      within "#order-item-#{item_order_3.id}" do
+        expect(page).to_not have_content("Your discount has been applied!")
+        expect(page).to have_content(item_order_3.price)
+        expect(page).to have_content(item_order_3.subtotal)
+      end
+    end
+
+    it 'order total reflects any discounts'
   end
 end

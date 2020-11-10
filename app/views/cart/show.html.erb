@@ -3,6 +3,7 @@
   <p>Your Cart is Empty!</p>
 <% else %>
 <h3>Total: <%= number_to_currency(cart.grand_total) %></h3>
+<h4>Any discounts will be applied to your total after checking out</h4>
   <% cart.items.each do |item| %>
     <section id='item-<%= item.id%>'>
       <h2><%= link_to item.name, "/items/#{item.id}" %></h2>

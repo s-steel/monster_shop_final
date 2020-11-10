@@ -14,7 +14,7 @@ class User::OrdersController < ApplicationController
     order.save
       cart.items.each do |item|
         if item.discount_to_use(cart.count_of(item.id))
-          discount = ((100 - item.discount_to_use(cart.count_of(item.id))) * 0.01)
+          discount = item.discount_to_use(cart.count_of(item.id)).discount_to_decimal
           has_discount = true
         else
           discount = 1

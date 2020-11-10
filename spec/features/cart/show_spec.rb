@@ -191,6 +191,8 @@ RSpec.describe 'Cart Show Page' do
         visit item_path(@troll)
         click_button 'Add to Cart'
         visit '/cart'
+
+        expect(page).to have_content("Any discounts will be applied to your total after checking out")
       end
 
       it 'can apply a discount and see the discounted subtotal with message' do
