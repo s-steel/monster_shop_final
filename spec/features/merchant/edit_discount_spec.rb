@@ -48,7 +48,7 @@ RSpec.describe 'Merchant Discount Index' do
       expect(find_field('discount[number_of_items]').value).to eq("#{@discount_1.number_of_items}")
     end
 
-    xit 'once submitted I am taked back to discount index, see flash message, and see updated discount' do
+    it 'once submitted I am taked back to discount index, see flash message, and see updated discount' do
       discount = @merchant_1.discounts.create!(discount: 5, number_of_items: 10)
       visit "/merchant/discounts/#{discount.id}/edit"
 
@@ -56,14 +56,11 @@ RSpec.describe 'Merchant Discount Index' do
       fill_in "discount[number_of_items]", with: 13
       click_button("Update Discount")
       expect(current_path).to eq("/merchant/discounts")
-save_and_open_page
-      within "#discount-#{discount.id}" do
-        expect(@discount_1.discount).to eq(7)
-        expect(page).to have_content(7)
-        expect(page).to have_content(13)
-      end
-
       expect(page).to have_content("Your discount has been updated")
+
+      edited_discount = Discount.find(discount.id)
+      expect(edited_discount.discount).to eq(7)
+      expect(edited_discount.number_of_items).to eq(13)
     end
 
     it 'you must fill in the form completely otherwise you get a flash error' do
