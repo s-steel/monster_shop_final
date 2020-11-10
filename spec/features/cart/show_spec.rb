@@ -14,7 +14,7 @@ RSpec.describe 'Cart Show Page' do
       @discount_1 = @megan.discounts.create!(discount: 5, number_of_items: 3)
       @discount_2 = @megan.discounts.create!(discount: 7, number_of_items: 5)
       @discount_3 = @megan.discounts.create!(discount: 6, number_of_items: 10)
-      @discount_4 = @megan.discounts.create!(discount: 10, number_of_items: 15)
+      @discount_4 = @megan.discounts.create!(discount: 10, number_of_items: 12)
       @discount_5 = @megan.discounts.create!(discount: 3, number_of_items: 20)
       @discount_6 = @megan.discounts.create!(discount: 5, number_of_items: 25)
       @discount_7 = @megan.discounts.create!(discount: 20, number_of_items: 26)
@@ -258,7 +258,36 @@ RSpec.describe 'Cart Show Page' do
           expect(page).to_not have_content("Normally: #{number_to_currency(@giant.price * 2)}")
           expect(page).to_not have_content("Discounted Subtotal: #{number_to_currency((@giant.price * 2) * @discount_1.discount_to_decimal)}")
         end
+      end
 
+      it 'when there is a conflict between discounts the greater discount will be applied' do
+        within "#item-#{@ogre.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+        end
+
+        within "#item-#{@ogre.id}" do
+          expect(page).to have_content("You received a bulk discount!")
+          expect(page).to have_content("Normally: #{number_to_currency(@ogre.price * 11)}")
+          expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 11) * @discount_2.discount_to_decimal)}")
+        end
+
+        within "#item-#{@ogre.id}" do
+          click_button('More of This!')
+        end
+        within "#item-#{@ogre.id}" do
+          expect(page).to have_content("You received a bulk discount!")
+          expect(page).to have_content("Normally: #{number_to_currency(@ogre.price * 12)}")
+          expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 12) * @discount_4.discount_to_decimal)}")
+        end
       end
     end
   end
