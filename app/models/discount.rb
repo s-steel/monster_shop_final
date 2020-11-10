@@ -6,4 +6,8 @@ class Discount < ApplicationRecord
   validates_numericality_of :discount, greater_than: 0
   validates_numericality_of :number_of_items, greater_than: 0
 
+
+  def discount_to_decimal
+    (100 - discount) * 0.01
+  end
 end

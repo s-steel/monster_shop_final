@@ -3,6 +3,7 @@
   <p>Your Cart is Empty!</p>
 <% else %>
 <h3>Total: <%= number_to_currency(cart.grand_total) %></h3>
+<h4>Any discounts will be applied to your total after checking out</h4>
   <% cart.items.each do |item| %>
     <section id='item-<%= item.id%>'>
       <h2><%= link_to item.name, "/items/#{item.id}" %></h2>
@@ -12,7 +13,7 @@
         <p>Quantity: <%= cart.count_of(item.id) %></p>
         <p>You received a bulk discount!</p>
         <p>Normally: <%= number_to_currency(cart.subtotal_of(item.id)) %></p>
-        <p>Discounted Subtotal: <%= number_to_currency(cart.subtotal_of(item.id) * ((100 - item.discount_to_use(cart.count_of(item.id))) * (0.01))) %></p>
+        <p>Discounted Subtotal: <%= number_to_currency(cart.subtotal_of(item.id) * item.discount_to_use(cart.count_of(item.id)).discount_to_decimal) %></p>
       <% else %>
         <p>Quantity: <%= cart.count_of(item.id) %></p>
         <p>Subtotal: <%= number_to_currency(cart.subtotal_of(item.id)) %></p>

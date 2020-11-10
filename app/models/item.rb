@@ -36,6 +36,6 @@ class Item < ApplicationRecord
   end
 
   def discount_to_use(item_count)
-     discounts.where("number_of_items <=  #{item_count}").maximum(:discount)
+     discounts.where("number_of_items <=  #{item_count}").order(discount: :desc).first
   end
 end
