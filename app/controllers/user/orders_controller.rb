@@ -15,18 +15,17 @@ class User::OrdersController < ApplicationController
       cart.items.each do |item|
         if item.discount_to_use(cart.count_of(item.id))
           discount = ((100 - item.discount_to_use(cart.count_of(item.id))) * 0.01)
-          order.order_items.create({
-            item: item,
-            quantity: cart.count_of(item.id),
-            price: (item.price * discount)
-            })
+          has_discount = true
         else
-          order.order_items.create({
-            item: item,
-            quantity: cart.count_of(item.id),
-            price: item.price
-            })
+          discount = 1
+          has_discount = false
         end
+        order.order_items.create({
+          item: item,
+          quantity: cart.count_of(item.id),
+          price: (item.price * discount),
+          discount?: has_discount
+          })
       end
     session.delete(:cart)
     flash[:notice] = "Order created successfully!"
