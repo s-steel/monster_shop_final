@@ -197,12 +197,14 @@ RSpec.describe 'Cart Show Page' do
         within "#item-#{@ogre.id}" do
           click_button('More of This!')
           click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
         end
 
         within "#item-#{@ogre.id}" do
           expect(page).to have_content("You received a bulk discount!")
-          expect(page).to have_content("Normally: #{number_to_currency(@ogre.price * 3)}")
-          expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 3) * @discount_1.discount_to_decimal)}")
+          expect(page).to have_content("Normally: #{number_to_currency(@ogre.price * 5)}")
+          expect(page).to have_content("Discounted Subtotal: #{number_to_currency((@ogre.price * 5) * @discount_2.discount_to_decimal)}")
         end
 
         within "#item-#{@giant.id}" do
