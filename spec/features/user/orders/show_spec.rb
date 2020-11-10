@@ -90,7 +90,7 @@ RSpec.describe 'Order Show Page' do
       expect(@ogre.inventory).to eq(7)
     end
 
-    it 'I see any discounts applied to respective items' do
+    it 'I see any discounts applied to respective items and order total reflects these discounts' do
       visit item_path(@troll)
       click_button 'Add to Cart'
       visit item_path(@hobbit)
@@ -139,8 +139,11 @@ RSpec.describe 'Order Show Page' do
         expect(page).to have_content(item_order_3.price)
         expect(page).to have_content(item_order_3.subtotal)
       end
-    end
 
-    it 'order total reflects any discounts'
+      expected = (@troll.price * item_order_1.quantity * @discount_1.discount_to_decimal) +
+                  (@hobbit.price * item_order_2.quantity * @discount_2.discount_to_decimal) +
+                  (item_order_3.subtotal)
+      expect(order.grand_total).to eq(expected)
+    end
   end
 end
