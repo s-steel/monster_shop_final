@@ -58,16 +58,16 @@ RSpec.describe Item do
       expect(@ogre.discount_to_use(2)).to be_nil
       expect(@hippo.discount_to_use(30)).to be_nil
 
-      expect(@ogre.discount_to_use(3)).to be(5)
-      expect(@ogre.discount_to_use(5)).to be(7)
-      expect(@ogre.discount_to_use(9)).to be(7)
-      expect(@ogre.discount_to_use(13)).to be(7)
-      expect(@ogre.discount_to_use(15)).to be(10)
-      expect(@ogre.discount_to_use(21)).to be(10)
-      expect(@ogre.discount_to_use(25)).to be(10)
-      expect(@ogre.discount_to_use(26)).to be(20)
-      expect(@ogre.discount_to_use(4009)).to be(20)
-      expect(@ogre.discount_to_use(4)).to be(5)
+      expect(@ogre.discount_to_use(3).id).to be(@discount_1.id)
+      expect(@ogre.discount_to_use(5).id).to be(@discount_2.id)
+      expect(@ogre.discount_to_use(9).id).to be(@discount_2.id)
+      expect(@ogre.discount_to_use(13).id).to be(@discount_2.id)
+      expect(@ogre.discount_to_use(15).id).to be(@discount_4.id)
+      expect(@ogre.discount_to_use(21).id).to be(@discount_4.id)
+      expect(@ogre.discount_to_use(25).id).to be(@discount_4.id)
+      expect(@ogre.discount_to_use(26).id).to be(@discount_7.id)
+      expect(@ogre.discount_to_use(4009).id).to be(@discount_7.id)
+      expect(@ogre.discount_to_use(4).id).to be(@discount_1.id)
     end
   end
 
