@@ -7,8 +7,9 @@ RSpec.describe 'Cart Show Page' do
       @megan = Merchant.create!(name: 'Megans Marmalades', address: '123 Main St', city: 'Denver', state: 'CO', zip: 80218)
       @brian = Merchant.create!(name: 'Brians Bagels', address: '125 Main St', city: 'Denver', state: 'CO', zip: 80218)
       @ogre = @megan.items.create!(name: 'Ogre', description: "I'm an Ogre!", price: 20, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 100 )
-      @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+      @giant = @megan.items.create!(name: 'Giant', description: "I'm a Giant!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 5 )
       @hippo = @brian.items.create!(name: 'Hippo', description: "I'm a Hippo!", price: 50, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 3 )
+      @troll = @brian.items.create!(name: 'Troll', description: "I'm a Troll!", price: 35, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaLM_vbg2Rh-mZ-B4t-RSU9AmSfEEq_SN9xPP_qrA2I6Ftq_D9Qw', active: true, inventory: 100 )
 
       @discount_1 = @megan.discounts.create!(discount: 5, number_of_items: 3)
       @discount_2 = @megan.discounts.create!(discount: 7, number_of_items: 5)
@@ -187,6 +188,8 @@ RSpec.describe 'Cart Show Page' do
         click_button 'Add to Cart'
         visit item_path(@hippo)
         click_button 'Add to Cart'
+        visit item_path(@troll)
+        click_button 'Add to Cart'
         visit '/cart'
       end
 
@@ -214,8 +217,24 @@ RSpec.describe 'Cart Show Page' do
         end
       end
 
-      it 'a merchant discount does not apply to items from another merchant'
+      it 'a merchant discount does not apply to items from another merchant' do
+        within "#item-#{@troll.id}" do
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+          click_button('More of This!')
+        end
 
+        within "#item-#{@troll.id}" do
+          expect(page).to have_content("Subtotal: #{number_to_currency(@troll.price * 6)}")
+        end
+        within "#item-#{@troll.id}" do
+          expect(page).to_not have_content("You received a bulk discount!")
+          expect(page).to_not have_content("Normally: #{number_to_currency(@troll.price * 6)}")
+          expect(page).to_not have_content("Discounted Subtotal: #{number_to_currency((@troll.price * 6) * @discount_1.discount_to_decimal)}")
+        end
+      end
     end
   end
 end
