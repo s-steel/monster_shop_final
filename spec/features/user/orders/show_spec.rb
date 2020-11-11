@@ -122,6 +122,10 @@ RSpec.describe 'Order Show Page' do
       item_order_1 = order.order_items[0]
       item_order_2 = order.order_items[1]
       item_order_3 = order.order_items[2]
+      expect(item_order_1.discount?).to eq(true)
+      expect(item_order_2.discount?).to eq(true)
+      expect(item_order_3.discount?).to eq(false)
+
       visit "/profile/orders/#{order.id}"
 
       within "#order-item-#{item_order_1.id}" do
